@@ -71,6 +71,14 @@ function run() {
 function start() {
   time.value = 10
   currentIndex.value = (Math.random() * 995)
+  const lotteried = Math.round(currentIndex.value + 3)
+  const data = document.querySelector(`[data-index="${lotteried}"]`) as HTMLElement
+  setTimeout(() => {
+    diceComplete(data.dataset)
+  }, time.value * 1000)
+}
+function diceComplete(data) {
+  console.log(data)
 }
 </script>
 
@@ -93,8 +101,7 @@ function start() {
           <div v-for="(item) in 1000" :key="item" class="px-2 flex flex-col rounded-lg  items-center justify-center w-[20%] shrink-0">
             <div class="px-2 mx-2 fixed border border-solid border-black w-[19%] h-[20%]" />
             <img :src="`https://q1.qlogo.cn/g?b=qq&nk=${tripleList[item % tripleList.length]?.qqNumber}&s=640`" class="rounded-full h-16 w-16 shadow-md m-3 mb-1">
-            <span :data-index="item" :data-qqNumber="tripleList[item % tripleList.length]?.qqNumber">{{ tripleList[item % tripleList.length].nickname }}</span>
-            {{ item }}
+            <span :data-index="item" :data-nickname="tripleList[item % tripleList.length]?.nickname" :data-qqNumber="tripleList[item % tripleList.length]?.qqNumber">{{ tripleList[item % tripleList.length].nickname }}</span>
           </div>
         </div>
       </div>
