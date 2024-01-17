@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch, computed } from "vue";
-import { ElAmap, ElAmapInfoWindow, ElAmapControlGeolocation } from "@vuemap/vue-amap";
 import { useQRCode } from '@vueuse/integrations/useQRCode'
 import { useRoute } from "vue-router";
 import { CheckCircleIcon } from "@heroicons/vue/24/solid";
