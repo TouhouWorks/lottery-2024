@@ -6,9 +6,6 @@ export default async function handler(
   response: VercelResponse,
 ) {
   const list = await kv.keys('lottery:*');
-  const result = await Promise.all(list.map(async (key) => {
-    const value = await kv.get(key);
-    return value;
-  }));
+  const result = await kv.mget(list);
   return response.status(200).json(result);
 }
