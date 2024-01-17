@@ -133,12 +133,12 @@ watch(qqNumber, (val) => {
     </h1>
     <hr class="w-full my-4 border-gray-300">
     <p>
-      幻夢結社新年大礼包。南国开曙日，油城复新春。助力首届粤西 THP 顺利举办，幻梦结社特推出贺岁抽奖活动。
+      幻夢結社新年大礼包。南国开曙日，油城复新春。助力首届粤西 THP 顺利举办，幻夢結社特推出贺岁抽奖活动。
     </p>
     <ol class="list-none">
       <li>「<span class="text-purple-500 font-bold">幻</span>」字状元，可兑换五百元大奖及周边礼品。</li>
-      <li>「<span class="text-blue-400 font-bold">梦</span>」字榜眼，可兑换三百元大奖及周边礼品。</li>
-      <li>「<span class="text-red-400 font-bold">结</span>」字探花，可兑换一百元大奖及周边礼品。</li>
+      <li>「<span class="text-red-400 font-bold">夢</span>」字榜眼，可兑换三百元大奖及周边礼品。</li>
+      <li>「<span class="text-blue-400 font-bold">結</span>」字探花，可兑换一百元大奖及周边礼品。</li>
     </ol>
     <p>
       只要在年例祭现场加入<a
