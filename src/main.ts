@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import './style.css'
-import VueAMap, { initAMapApiLoader } from '@vuemap/vue-amap'
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import App from './App.vue'
 import Entry from './components/Entry.vue'
 import Lottery from './components/Lottery.vue'
