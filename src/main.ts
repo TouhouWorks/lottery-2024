@@ -5,12 +5,17 @@ import App from './App.vue'
 import Entry from './components/Entry.vue'
 import Lottery from './components/Lottery.vue'
 import Rou from './components/Rou.vue'
+import LotteryEntrants from './components/LotteryEntrants.vue'
 
 const routes = [
   { path: '/', component: Entry },
   { path: '/ticket/:ticketId', component: Entry },
   { path: '/lottery', component: Lottery },
   { path: '/rou', component: Rou },
+  {
+    path: '/lotteryEntrants',
+    component: LotteryEntrants,
+  },
 ]
 const router = createRouter({
   history: createWebHashHistory(),
