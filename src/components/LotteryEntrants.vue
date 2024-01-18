@@ -5,6 +5,7 @@ import { computed, h, nextTick, onMounted, ref, watch } from 'vue'
 const listUrl = '/api/getLotteries'
 
 const list = computedAsync(async () => {
+  console.log('first list')
   return await getList()
 })
 async function getList() {
@@ -30,23 +31,27 @@ watchDebounced(y, (value) => {
 }, { debounce: 15 })
 function scroll() {
   if (bottom.value && list.value?.length > 0) {
+    console.log('bottom')
     setTimeout(() => {
       y.value = 0
     }, 3000)
   }
   else {
-    if (y.value === 0) {
+    if (top.value) {
+      console.log('top')
       setTimeout(() => {
         y.value = 10
       }, 3000)
     }
     else {
+      console.log('normal scroll')
       y.value += 10
     }
   }
 }
 
 watch(list, (value) => {
+  console.log('list changed')
   setTimeout(() => {
     nextTick(() => {
       y.value += 10
