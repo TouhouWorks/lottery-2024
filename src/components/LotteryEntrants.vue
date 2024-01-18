@@ -5,6 +5,9 @@ import { computed, h, nextTick, onMounted, ref, watch } from 'vue'
 const listUrl = '/api/getLotteries'
 
 const list = computedAsync(async () => {
+  return await getList()
+})
+async function getList() {
   const res = await fetch(listUrl)
   const data: {
     qqNumber: string
@@ -17,8 +20,7 @@ const list = computedAsync(async () => {
     mockData.push(data[random])
   }
   return mockData
-})
-
+}
 const el = ref<HTMLElement | null>(null)
 const { x, y, isScrolling, arrivedState, directions } = useScroll(el, { behavior: 'smooth' })
 const { left, right, top, bottom } = toRefs(arrivedState)
@@ -51,6 +53,10 @@ watch(list, (value) => {
     })
   }, 3000)
 })
+
+setInterval(async () => {
+  list.value = await getList()
+}, 60000)
 onMounted(() => {
 })
 function formatTime(time: number) {
@@ -72,7 +78,7 @@ function formatTime(time: number) {
     </div>
     <div ref="el" class="flex flex-col items-center mt-2 max-h-[90%] overflow-y-hidden">
       <div class="flex flex-col gap-4">
-        <template v-for="(item) in list" :key="item">
+        <template v-for="(item) in list">
           <div class="flex flex-row items-center justify-between w-[80vw]">
             <div class="flex flex-row items-center">
               <div class="flex flex-row items-center justify-center w-16 h-16 rounded-full">
