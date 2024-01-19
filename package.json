@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "less": "^4.2.0",
     "lodash": "^4.17.21",
+    "node-2fa": "^2.0.3",
     "qrcode": "^1",
     "vue": "^3.4.14",
     "vue-router": "4",

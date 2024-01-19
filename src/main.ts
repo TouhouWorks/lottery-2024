@@ -6,6 +6,7 @@ import Entry from './components/Entry.vue'
 import Lottery from './components/Lottery.vue'
 import Rou from './components/Rou.vue'
 import LotteryEntrants from './components/LotteryEntrants.vue'
+import Admin from './components/Admin.vue'
 
 const routes = [
   { path: '/', component: Entry },
@@ -15,6 +16,10 @@ const routes = [
   {
     path: '/lotteryEntrants',
     component: LotteryEntrants,
+  },
+  {
+    path: '/admin',
+    component: Admin,
   },
 ]
 const router = createRouter({
