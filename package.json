@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.6.3",
+    "@types/jquery": "^3.5.29",
     "@types/lodash": "^4.14.202",
     "@vitejs/plugin-vue": "^5.0.3",
     "autoprefixer": "^10.4.17",

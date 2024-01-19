@@ -76,7 +76,8 @@ function formatTime(time: number) {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-start h-screen background">
+  <div class="flex flex-col items-center justify-start background overflow-hidden w-screen h-screen">
+    <div class="w-screen h-screen custom-bg fixed z-0" />
     <div class="flex flex-col items-center mt-4">
       <p class="text-4xl text-white font-bold drop-shadow-sm px-2">
         参与「幻夢結社」2024 高凉年例祭现场抽奖名单
@@ -87,10 +88,10 @@ function formatTime(time: number) {
     </div>
     <div ref="el" class="flex flex-col items-center mt-2 max-h-[85%] overflow-y-hidden">
       <div class="flex flex-col gap-4">
-        <template v-for="(item) in list">
+        <template v-for="(item) in list" :key="item.qqNumber">
           <div class="flex flex-row items-center justify-between w-[50vw]">
             <div class="flex flex-row items-center">
-              <div class="flex flex-row items-center justify-center w-16 h-16 rounded-full">
+              <div class="flex flex-row items-center justify-center w-16 h-16 rounded-full z-50">
                 <img :src="`https://q1.qlogo.cn/g?b=qq&nk=${item.qqNumber}&s=640`" class="w-16 h-16 rounded-full shadow-sm">
               </div>
               <div class="flex flex-col ml-4">
@@ -106,10 +107,11 @@ function formatTime(time: number) {
 </template>
 
 <style>
-body {
+.custom-bg {
   background-image: url('/bg.jpg');
   background-size: cover;
   background-position: center;
-  backdrop-filter: blur(5px) brightness(0.5);
+  background-repeat: no-repeat;
+  filter: blur(5px) brightness(0.5);
 }
 </style>
