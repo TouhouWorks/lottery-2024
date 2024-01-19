@@ -170,7 +170,7 @@ function setMotionBlur() {
       </div>
 
       <div class="h-full w-full">
-        <div class="flex items-center shrink-0 h-full w-full overflow-hidden rounded-lg" :style="`transition: all ${time}s ${easing};transform: translateX(-${currentIndex * 20}%)`">
+        <div class="flex items-center shrink-0 h-full w-full" :style="`transition: all ${time}s ${easing};transform: translateX(-${currentIndex * 20}%)`">
           <div v-for="(item) in 1000" :key="item" class="svg-motion-blur ibg mx-1 flex flex-col h-40 rounded-lg items-center justify-center w-[calc(20%-0.5rem)] shrink-0 shadow-md overflow-hidden">
             <img :src="`https://q1.qlogo.cn/g?b=qq&nk=${tripleList[item % tripleList.length]?.qqNumber}&s=640`" class="mt-auto rounded-full size-24 drop-shadow-md">
             <span class="text-white drop-shadow-md mt-1 mb-auto text-lg font-semibold" :data-index="item" :data-nickname="tripleList[item % tripleList.length]?.nickname" :data-qqNumber="tripleList[item % tripleList.length]?.qqNumber">{{ tripleList[item % tripleList.length].nickname }}</span>
