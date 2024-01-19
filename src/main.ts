@@ -9,7 +9,7 @@ import LotteryEntrants from './components/LotteryEntrants.vue'
 import Admin from './components/Admin.vue'
 
 const routes = [
-  { path: '/', component: Entry },
+  { path: '/', component: LotteryEntrants },
   { path: '/ticket/:ticketId', component: Entry },
   { path: '/lottery', component: Lottery },
   { path: '/rou', component: Rou },
