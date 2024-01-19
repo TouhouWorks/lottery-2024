@@ -113,7 +113,7 @@ function diceComplete(data: any, cls: number) {
           結
         </button>
       </div>
-      <div class="fixed m-auto w-screen h-48 left-0 right-0 bottom-0 top-0 flex items-center justify-center z-40">
+      <div class="fixed m-auto w-[90vw] h-48 left-0 right-0 bottom-0 top-0 flex items-center justify-center z-40">
         <div class="h-40 w-40 z-50 gl" />
         <div class="h-40 w-[3px] bg-yellow-300 m-auto shadow-yellow-600 shadow-md z-50" />
         <div class="h-40 w-40 z-50 gr" />
@@ -121,7 +121,7 @@ function diceComplete(data: any, cls: number) {
 
       <div class="h-full w-full">
         <div class="flex items-center shrink-0 h-full w-full" :style="`transition: all ${time}s ${easing};transform: translateX(-${currentIndex * 20}%)`">
-          <div v-for="(item) in 1000" :key="item" class="bg-gradient-to-t from-blue-800 from-0%  via-blue-400 to-gray-200 to-35% mx-1 flex flex-col h-40 rounded-lg items-center justify-center w-[calc(20%-0.5rem)] shrink-0 border border-gray-500 shadow-md overflow-hidden">
+          <div v-for="(item) in 1000" :key="item" class="bg-gradient-to-t from-blue-200 to-gray-200 to-20% mx-1 flex flex-col h-40 rounded-lg items-center justify-center w-[calc(20%-0.5rem)] shrink-0 border border-gray-500 shadow-md overflow-hidden">
             <img :src="`https://q1.qlogo.cn/g?b=qq&nk=${tripleList[item % tripleList.length]?.qqNumber}&s=640`" class="mt-auto rounded-full size-16 shadow-md m-3 mb-1">
             <span :data-index="item" :data-nickname="tripleList[item % tripleList.length]?.nickname" :data-qqNumber="tripleList[item % tripleList.length]?.qqNumber">{{ tripleList[item % tripleList.length].nickname }}</span>
             <div class="mt-auto w-full h-2 bg-blue-600" />
@@ -137,15 +137,15 @@ function diceComplete(data: any, cls: number) {
 
 <style scoped>
 .gl {
-  background-image: url('/assets/images/gl.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+    --tw-gradient-from: rgb(209 213 219 / 1);
+    --tw-gradient-to: rgb(209 213 219 / 0);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+    background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
 .gr {
-  background-image: url('/assets/images/gr.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+    --tw-gradient-from: rgb(209 213 219 / 1);
+    --tw-gradient-to: rgb(209 213 219 / 0);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+    background-image: linear-gradient(to left, var(--tw-gradient-stops));
 }
 </style>
