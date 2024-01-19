@@ -80,7 +80,7 @@ async function startRoll(cls: number) {
   // await wait(5 * 1000)
   stop(cls)
 }
-const defaultAnimationTime = 3
+const defaultAnimationTime = 10
 
 async function stopRoll(target: number) {
   easeOut()
@@ -95,7 +95,7 @@ async function stopRoll(target: number) {
 async function stop(cls: number) {
   let target = 0
   do
-    target = (Math.random() * 995)
+    target = (Math.random() * 500) + 495
     // console.log(currentIndex.value)
   while ((target % 1 <= 0.55) && (target % 1 >= 0.45))
   await stopRoll(target)
