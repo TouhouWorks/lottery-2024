@@ -38,18 +38,34 @@ function easeOut() {
   easing.value = 'cubic-bezier(0.16, 1, 0.3, 1)'
 }
 
-async function startRoll() {
+const clsNames = [
+  '幻',
+  '夢',
+  '結',
+]
+
+async function startRoll(cls: number) {
   linear()
+  time.value = 0
+  currentIndex.value = 0
+  await wait(10)
   const cb = async () => {
-    console.log(currentIndex.value)
-    time.value = 0
-    currentIndex.value = 0
-    await wait(10)
-    time.value = 10
-    currentIndex.value = 995
+    if (currentIndex.value <= 500) {
+      console.log('start')
+      time.value = 5
+      currentIndex.value += 500
+    }
+    else {
+      console.log('end')
+      time.value = 0
+      currentIndex.value = 0
+      await cb()
+    }
   }
   await cb()
-  return interval = setInterval(cb, 10 * 1000)
+  interval = setInterval(cb, 5 * 1000)
+  await wait(5 * 1000)
+  stop(cls)
 }
 
 async function stopRoll(target: number) {
@@ -57,52 +73,58 @@ async function stopRoll(target: number) {
     return
   easeOut()
   clearInterval(interval)
+  time.value = 0
   currentIndex.value = 0
+  await wait(10)
   time.value = 5
   currentIndex.value = target
   return wait(5 * 1000)
 }
 
-async function stop() {
+async function stop(cls: number) {
   do {
     currentIndex.value = (Math.random() * 995)
     console.log(currentIndex.value)
   }
-  while ((currentIndex.value % 1 <= 0.525) && (currentIndex.value % 1 >= 0.475))
+  while ((currentIndex.value % 1 <= 0.55) && (currentIndex.value % 1 >= 0.45))
   await stopRoll(currentIndex.value)
   const lotteried = Math.round(currentIndex.value + 3)
   const data = document.querySelector(`[data-index="${lotteried}"]`) as HTMLElement
-  diceComplete(data.dataset)
+  diceComplete(data.dataset, cls)
 }
 
-function diceComplete(data: any) {
-  console.log(data)
+function diceComplete(data: any, cls: number) {
+  console.log(data, clsNames[cls])
 }
 </script>
 
 <template>
-  <div>
-    <div v-if="loaded" class="w-screen h-screen overflow-x-hidden">
-      <div class="fixed flex gap-2 m-2 z-50">
-        <input v-model="currentIndex" type="number" name="jump" class="rounded-md shadow-md">
-        <button class=" bg-indigo-500 shadow-md rounded-md text-white px-2 py-1" type="button" @click="startRoll">
-          开始
+  <div class="flex justify-center bg-gray-300">
+    <div v-if="loaded" class="w-[90vw] h-screen overflow-x-hidden">
+      <div class="fixed flex m-2 z-50 w-[90vw]">
+        <input v-model="currentIndex" type="number" name="jump" class="rounded-md shadow-md mr-auto">
+        <button class="bg-purple-500 shadow-md rounded-md text-white px-4 py-1 mx-2" type="button" @click="startRoll(0)">
+          幻
         </button>
-        <button class=" bg-indigo-500 shadow-md rounded-md text-white px-2 py-1" type="button" @click="stop">
-          停止
+        <button class="bg-red-500 shadow-md rounded-md text-white px-4 py-1 mx-2" type="button" @click="startRoll(1)">
+          夢
+        </button>
+        <button class="bg-blue-500 shadow-md rounded-md text-white px-4 py-1 mx-2" type="button" @click="startRoll(2)">
+          結
         </button>
       </div>
-      <div class="fixed w-screen h-screen m-auto left-0 right-0 bottom-0 top-0 flex items-center justify-center">
-        <div class="h-[60%] w-[1px] bg-black m-auto" />
+      <div class="fixed m-auto w-screen h-48 left-0 right-0 bottom-0 top-0 flex items-center justify-center z-40">
+        <div class="h-40 w-40 z-50 gl" />
+        <div class="h-40 w-[3px] bg-yellow-300 m-auto shadow-yellow-600 shadow-md z-50" />
+        <div class="h-40 w-40 z-50 gr" />
       </div>
 
       <div class="h-full w-full">
         <div class="flex items-center shrink-0 h-full w-full" :style="`transition: all ${time}s ${easing};transform: translateX(-${currentIndex * 20}%)`">
-          <!-- 前置防止抽到1-20数值 -->
-          <div v-for="(item) in 1000" :key="item" class="px-2 flex flex-col rounded-lg  items-center justify-center w-[20%] shrink-0">
-            <div class="px-2 mx-2 fixed border border-solid border-black w-[19%] h-[20%]" />
-            <img :src="`https://q1.qlogo.cn/g?b=qq&nk=${tripleList[item % tripleList.length]?.qqNumber}&s=640`" class="rounded-full h-16 w-16 shadow-md m-3 mb-1">
+          <div v-for="(item) in 1000" :key="item" class="bg-gradient-to-t from-blue-800 from-0%  via-blue-400 to-gray-200 to-35% mx-1 flex flex-col h-40 rounded-lg items-center justify-center w-[calc(20%-0.5rem)] shrink-0 border border-gray-500 shadow-md overflow-hidden">
+            <img :src="`https://q1.qlogo.cn/g?b=qq&nk=${tripleList[item % tripleList.length]?.qqNumber}&s=640`" class="mt-auto rounded-full size-16 shadow-md m-3 mb-1">
             <span :data-index="item" :data-nickname="tripleList[item % tripleList.length]?.nickname" :data-qqNumber="tripleList[item % tripleList.length]?.qqNumber">{{ tripleList[item % tripleList.length].nickname }}</span>
+            <div class="mt-auto w-full h-2 bg-blue-600" />
           </div>
         </div>
       </div>
@@ -112,3 +134,18 @@ function diceComplete(data: any) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.gl {
+  background-image: url('/assets/images/gl.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.gr {
+  background-image: url('/assets/images/gr.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+</style>
