@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import _, { transform } from 'lodash'
+import _ from 'lodash'
 import wait from 'wait'
 import { computedAsync } from '@vueuse/core'
 import { computed, onMounted, ref } from 'vue'
@@ -13,25 +13,34 @@ const targetNickname = ref('')
 const targetQqNumber = ref('')
 const cardScale = ref(1)
 const showAward = ref(false)
-const targetAward = ref('')
 const showLine = ref(true)
+const blurFilter = ref(null as SVGElement | null)
+const clicked = ref(false)
+const defaultAnimationTime = 10
+const cls = ref(0)
 const clsNames = [
   '幻',
   '夢',
   '結',
 ]
-const music = {
-  幻: 'th07_16_climax.mp3',
-  夢: 'th08_09_climax.mp3',
-  結: 'th06_05_climax.mp3',
-} as { [key: string]: string }
-
+const music = [
+  'th07_16_climax.mp3',
+  'th08_09_climax.mp3',
+  'th06_05_climax.mp3',
+]
 const awardColor = {
   幻: 'purple',
   夢: 'red',
   結: 'blue',
 } as { [key: string]: string }
-const clicked = ref(false)
+
+const targetAward = computed(() => {
+  return clsNames[cls.value]
+})
+
+const audio = computed(() =>
+  new Audio(music[cls.value]),
+)
 
 const list = computedAsync(async () => {
   const res = await fetch(listUrl)
@@ -52,43 +61,25 @@ const loaded = computed(() => {
   return (list?.value?.length || 0) > 0
 })
 
-function linear() {
-  easing.value = 'linear'
-}
-
 function easeOut() {
   easing.value = 'cubic-bezier(0.16, 1, 0.3, 1)'
 }
 
-async function startRoll(cls: number) {
+async function startRoll(n: number) {
+  const sound = new Audio('/rouling.mp3')
+  sound.play()
+  cls.value = n
   clicked.value = true
   setMotionBlur()
-  // linear()
   await wait(5)
   time.value = 0
   currentIndex.value = 0
-  // await wait(10)
-  const cb = async () => {
-    if (currentIndex.value <= 300) {
-      console.log('start')
-      time.value = 5
-      currentIndex.value += 300
-    }
-    else {
-      console.log('end')
-      time.value = 0
-      currentIndex.value = 0
-      await cb()
-    }
-  }
-  // cb()
-  // interval = setInterval(cb, 5 * 1000)
-  // await wait(5 * 1000)
-  stop(cls)
+  stop()
 }
-const defaultAnimationTime = 10
+const pray = ref(false)
 
 async function stopRoll(target: number) {
+  pray.value = true
   easeOut()
   time.value = 0
   currentIndex.value = 0
@@ -98,7 +89,7 @@ async function stopRoll(target: number) {
   return wait(defaultAnimationTime * 1000)
 }
 
-async function stop(cls: number) {
+async function stop() {
   let target = 0
   do
     target = (Math.random() * 500) + 495
@@ -107,37 +98,28 @@ async function stop(cls: number) {
   await stopRoll(target)
   const lotteried = Math.round(target + 3)
   const data = document.querySelector(`[data-index="${lotteried}"]`) as HTMLElement
-  diceComplete(data, cls)
+  diceComplete(data)
 }
 
-async function diceComplete(data: any, cls: number) {
-  console.log('callback', data, clsNames[cls])
+async function diceComplete(data: any) {
+  pray.value = false
   await wait(500)
   time.value = 0
   showLine.value = false
   showList.value = false
   targetNickname.value = data.dataset.nickname
   targetQqNumber.value = data.dataset.qqnumber
-  targetAward.value = clsNames[cls]
   currentIndex.value = 0
-  playAudio(music[clsNames[cls]])
+  playAudio()
   await wait(50)
   cardScale.value = 2
   await wait(500)
   showAward.value = true
 }
 
-function playAudio(url: string) {
-  const audio = new Audio(url)
-  audio.play()
+function playAudio() {
+  audio.value.play()
 }
-
-let blurFilter: SVGElement | null = null
-
-onMounted(() => {
-  blurFilter = document.querySelector('#blur > feGaussianBlur') // the feGaussianBlur primitive
-  console.log(blurFilter)
-})
 
 function toggleFullScreen() {
   if (!document.fullscreenElement) {
@@ -159,7 +141,7 @@ function setMotionBlur() {
 
   // a helper to simplify setting the blur.
   function setBlur(x: number, y: number) {
-    blurFilter!.setAttribute('stdDeviation', `${x},${y}`)
+    blurFilter.value!.setAttribute('stdDeviation', `${x},${y}`)
   }
 
   (function updateMotionBlur() {
@@ -180,9 +162,33 @@ function setMotionBlur() {
     requestAnimationFrame(updateMotionBlur)
   })()
 }
+
 function reloadPage() {
-  window.location.reload()
+  if (!audio?.value?.paused) {
+    audio.value.pause()
+    audio.value.currentTime = 0
+  }
+  currentIndex.value = 0
+  time.value = 0
+  easing.value = 'cubic-bezier(0.16, 1, 0.3, 1)'
+  showList.value = true
+  targetNickname.value = ''
+  targetQqNumber.value = ''
+  cardScale.value = 1
+  showAward.value = false
+  showLine.value = true
+  clicked.value = false
 }
+
+const dotCount = ref(0)
+setInterval(() => {
+  dotCount.value = (dotCount.value + 1) % 4
+}, 150)
+
+onMounted(() => {
+  blurFilter.value = document.querySelector('#blur > feGaussianBlur') // the feGaussianBlur primitive
+  console.log(blurFilter.value)
+})
 </script>
 
 <template>
@@ -196,7 +202,13 @@ function reloadPage() {
         </defs>
       </svg>
     </div>
-    <div class="bgog h-screen w-screen fixed" />
+    <div class="bgog h-screen w-screen fixed">
+      <div v-if="pray" class="h-screen w-screen flex items-end justify-end text-white z-50">
+        <div class="mx-4 my-2 flex items-start w-32 drop-shadow-md font-semibold text-xl">
+          少女祈祷中{{ '.'.repeat(dotCount) }}
+        </div>
+      </div>
+    </div>
     <div v-if="loaded" class="w-[90vw] h-screen overflow-x-hidden">
       <button class="fixed mt-5 top-0 right-0 m-2 z-50 bg-gray-500 shadow-md rounded-md text-gray-100 px-5 py-1" type="button" @click="toggleFullScreen">
         全屏
@@ -246,8 +258,10 @@ function reloadPage() {
         </div>
       </div>
     </div>
-    <div v-else class="flex items-center justify-center m-auto h-screen font-bold text-2xl text-white">
-      少女祈祷中...
+    <div v-else class="flex items-center justify-center m-auto h-screen font-bold text-2xl text-white z-50">
+      <div class="w-40 flex items-start">
+        少女祈祷中{{ '.'.repeat(dotCount) }}
+      </div>
     </div>
   </div>
 </template>
