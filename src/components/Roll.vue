@@ -20,6 +20,12 @@ const clsNames = [
   '夢',
   '結',
 ]
+const music = {
+  幻: 'th07_16_climax.mp3',
+  夢: 'th08_09_climax.mp3',
+  結: 'th06_05_climax.mp3',
+} as { [key: string]: string }
+
 const awardColor = {
   幻: 'purple',
   夢: 'red',
@@ -114,10 +120,16 @@ async function diceComplete(data: any, cls: number) {
   targetQqNumber.value = data.dataset.qqnumber
   targetAward.value = clsNames[cls]
   currentIndex.value = 0
+  playAudio(music[clsNames[cls]])
   await wait(50)
   cardScale.value = 2
   await wait(500)
   showAward.value = true
+}
+
+function playAudio(url: string) {
+  const audio = new Audio(url)
+  audio.play()
 }
 
 let blurFilter: SVGElement | null = null
@@ -126,6 +138,16 @@ onMounted(() => {
   blurFilter = document.querySelector('#blur > feGaussianBlur') // the feGaussianBlur primitive
   console.log(blurFilter)
 })
+
+function toggleFullScreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen()
+  }
+  else {
+    if (document.exitFullscreen)
+      document.exitFullscreen()
+  }
+}
 
 function setMotionBlur() {
   // the element we want to apply the effect
@@ -176,6 +198,9 @@ function reloadPage() {
     </div>
     <div class="bgog h-screen w-screen fixed" />
     <div v-if="loaded" class="w-[90vw] h-screen overflow-x-hidden">
+      <button class="fixed mt-5 top-0 right-0 m-2 z-50 bg-gray-500 shadow-md rounded-md text-gray-100 px-5 py-1" type="button" @click="toggleFullScreen">
+        全屏
+      </button>
       <div v-if="!clicked" class="fixed flex m-2 z-50 w-[90vw] mt-5">
         <button class="bg-purple-500 shadow-md rounded-md text-purple-100 px-5 py-1 mx-3" type="button" @click="startRoll(0)">
           幻
@@ -244,7 +269,7 @@ function reloadPage() {
   background-image: url('/bg.jpg');
   background-size: cover;
   background-position: center;
-  filter: brightness(0.5);
+  filter: brightness(0.8);
 }
 .ibg {
   background-color: rgba(255, 255, 255, 0.1);
