@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import './style.css'
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 import Entry from './components/Entry.vue'
 import Roll from './components/Roll.vue'
@@ -21,7 +21,7 @@ const routes = [
   },
 ]
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
 })
 createApp(App).use(router).mount('#app')

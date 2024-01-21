@@ -79,7 +79,7 @@ async function registerQRCode() {
   const data = await res.json()
   if (res.status === 200) {
     needDisplay.value = true
-    qrCodeContent.value = `https://lottery-2024.touhou.works/#/ticket/${ticketId.value}`
+    qrCodeContent.value = `https://lottery-2024.touhou.works/ticket/${ticketId.value}`
   }
   else { alert(`生成失败: ${data.error}`) }
 }
