@@ -185,7 +185,13 @@ setInterval(() => {
   dotCount.value = (dotCount.value + 1) % 4
 }, 150)
 
+function isFirefox() {
+  return navigator.userAgent.includes('Firefox')
+}
 onMounted(() => {
+  if (!isFirefox())
+    alert('请使用火狐浏览器打开本页面，否则可能会出现严重的渲染问题')
+
   blurFilter.value = document.querySelector('#blur > feGaussianBlur') // the feGaussianBlur primitive
   console.log(blurFilter.value)
 })
