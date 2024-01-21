@@ -24,9 +24,9 @@ const clsNames = [
   '結',
 ]
 const music = [
-  'th07_16_climax.mp3',
-  'th08_09_climax.mp3',
-  'th06_05_climax.mp3',
+  new Audio('th07_16_climax.mp3'),
+  new Audio('th08_09_climax.mp3'),
+  new Audio('th06_05_climax.mp3'),
 ]
 const awardColor = {
   幻: 'purple',
@@ -39,7 +39,7 @@ const targetAward = computed(() => {
 })
 
 const audio = computed(() =>
-  new Audio(music[cls.value]),
+  music[cls.value],
 )
 
 const list = computedAsync(async () => {
@@ -56,17 +56,21 @@ const tripleList = computed(() => {
   const shuffled = _.shuffle(list.value)
   return shuffled.concat(shuffled.concat(shuffled))
 })
-
+const loadedCount = ref(0)
+const audioReady = computed(() => {
+  return loadedCount.value >= 4
+})
 const loaded = computed(() => {
-  return (list?.value?.length || 0) > 0
+  return (list?.value?.length || 0) > 0 && audioReady.value
 })
 
 function easeOut() {
   easing.value = 'cubic-bezier(0.16, 1, 0.3, 1)'
 }
 
+const sound = new Audio('/rouling.mp3')
+
 async function startRoll(n: number) {
-  const sound = new Audio('/rouling.mp3')
   sound.play()
   cls.value = n
   clicked.value = true
@@ -188,12 +192,27 @@ setInterval(() => {
 function isFirefox() {
   return navigator.userAgent.includes('Firefox')
 }
+function loadAssets() {
+  sound.load()
+  sound.oncanplaythrough = () => {
+    console.log('sound can playthrough')
+    loadedCount.value++
+  }
+  music.forEach((item) => {
+    item.load()
+    item.oncanplaythrough = () => {
+      console.log(`${item.src} can playthrough`)
+      loadedCount.value++
+    }
+  })
+}
 onMounted(() => {
   if (!isFirefox())
     alert('请使用火狐浏览器打开本页面，否则可能会出现严重的渲染问题')
 
   blurFilter.value = document.querySelector('#blur > feGaussianBlur') // the feGaussianBlur primitive
   console.log(blurFilter.value)
+  loadAssets()
 })
 </script>
 
