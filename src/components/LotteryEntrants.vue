@@ -16,12 +16,12 @@ async function getList() {
     nickname: string
     time: number
   }[] = await res.json()
-  const mockData = []
-  for (let i = 0; i < 20; i++) {
-    const random = Math.floor(Math.random() * data.length)
-    mockData.push(data[random])
-  }
-  return mockData
+  // const mockData = []
+  // for (let i = 0; i < 20; i++) {
+  //   const random = Math.floor(Math.random() * data.length)
+  //   mockData.push(data[random])
+  // }
+  // return mockData
   return data
 }
 const el = ref<HTMLElement | null>(null)
