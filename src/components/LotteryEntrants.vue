@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computedAsync, toRefs, useDebounce, useScroll, watchDebounced } from '@vueuse/core'
 import { computed, h, nextTick, onMounted, ref, watch } from 'vue'
+import wait from 'wait'
 
 const listUrl = '/api/getLotteries'
 
@@ -15,41 +16,68 @@ async function getList() {
     nickname: string
     time: number
   }[] = await res.json()
-  // const mockData = []
-  // for (let i = 0; i < 20; i++) {
-  //   const random = Math.floor(Math.random() * data.length)
-  //   mockData.push(data[random])
-  // }
-  // return mockData
+  const mockData = []
+  for (let i = 0; i < 20; i++) {
+    const random = Math.floor(Math.random() * data.length)
+    mockData.push(data[random])
+  }
+  return mockData
   return data
 }
 const el = ref<HTMLElement | null>(null)
 const { x, y, isScrolling, arrivedState, directions } = useScroll(el, { behavior: 'smooth' })
 const { left, right, top, bottom } = toRefs(arrivedState)
 
-watchDebounced(y, (value) => {
-  scroll()
-}, { debounce: 15 })
-function scroll() {
-  if (bottom.value && list.value?.length > 0) {
-    console.log('bottom')
+// watchDebounced(y, (value) => {
+//   if (value === 0)
+//     console.log('top')
+//   else
+//     scroll()
+// }, { debounce: 15 })
+const stopScroll = ref(false)
+async function scroll() {
+  await wait(100)
+  if (!bottom.value && list.value?.length > 0) {
+    y.value += 10
+    console.log('normal scroll', y.value)
+  }
+  if (bottom.value && list.value?.length > 0 && y.value > 0) {
+    console.log(`bottom arrived, y: ${y.value}`)
+    stopScroll.value = true
     setTimeout(() => {
       y.value = 0
+      stopScroll.value = false
+      setTimeout(() => {
+        scroll()
+      }, 3000)
     }, 3000)
   }
-  else {
-    if (top.value) {
-      console.log('top')
-      setTimeout(() => {
-        y.value = 10
-      }, 3000)
-    }
-    else {
-      console.log('normal scroll')
-      y.value += 10
-    }
-  }
+  if (!stopScroll.value)
+    requestAnimationFrame(scroll)
+
+  // if (bottom.value && list.value?.length > 0) {
+  //   console.log('bottom', y.value)
+  //   setTimeout(() => {
+  //     console.log('reset', y.value)
+  //     y.value = 0
+  //     console.log('reset', y.value)
+  //   }, 3000)
+  // }
+  // else {
+  //   if (top.value) {
+  //     console.log('top', y.value)
+  //     setTimeout(() => {
+  //       y.value = 10
+  //     }, 3000)
+  //   }
+  //   else {
+  //     await wait(100)
+  //     console.log('normal scroll', y.value)
+  //     y.value += 10
+  //   }
+  // }
 }
+scroll()
 
 watch(list, (value) => {
   console.log('list changed')
@@ -79,17 +107,17 @@ function formatTime(time: number) {
   <div class="flex flex-col items-center justify-start background overflow-hidden w-screen h-screen">
     <div class="w-screen h-screen custom-bg fixed z-0" />
     <div class="flex flex-col items-center mt-4">
-      <p class="text-4xl text-white font-bold drop-shadow-sm px-2">
-        参与「幻夢結社」2024 高凉年例祭现场抽奖名单
+      <p class="text-2xl lg:text-4xl text-white font-bold drop-shadow-sm px-2 w-[calc(100vw-4rem)] lg:w-full">
+        「幻夢結社」2024 高凉年例祭
       </p>
       <p class="text-2xl text-white font-light drop-shadow-sm px-2">
-        当前人数: {{ list?.length }}
+        参与现场抽奖人数: {{ list?.length }}
       </p>
     </div>
     <div ref="el" class="flex flex-col items-center mt-2 max-h-[85%] overflow-y-hidden">
       <div class="flex flex-col gap-4">
         <template v-for="(item) in list" :key="item.qqNumber">
-          <div class="flex flex-row items-center justify-between w-[50vw]">
+          <div class="flex flex-row items-center justify-between w-screen px-8 lg:w-[50vw]">
             <div class="flex flex-row items-center">
               <div class="flex flex-row items-center justify-center w-16 h-16 rounded-full z-50">
                 <img :src="`https://q1.qlogo.cn/g?b=qq&nk=${item.qqNumber}&s=640`" class="w-16 h-16 rounded-full shadow-sm">
