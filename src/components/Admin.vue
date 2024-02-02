@@ -108,6 +108,9 @@ async function registerQRCode() {
           >
           <div v-if="needDisplay" class="flex flex-col items-center mt-2">
             <p>二维码有效期 <span class="text-red-500">{{ countDown }}</span> 秒</p>
+            <p class="text-red-400 font-bold text-xl">
+              请在有效期内扫码并登记，每个二维码只能登记一位参与者
+            </p>
             <p>票据 ID: <code class="text-gray-400">{{ ticketId }}</code></p>
           </div>
           <p v-else>
