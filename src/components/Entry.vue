@@ -14,7 +14,9 @@ function checkBrowserSupport() {
 
   return !(isQQBrowser || isWechat)
 }
-
+const joinGroupLink = ref(`https://qm.qq.com/q/o4n2wIlogE`)
+const name = ref('')
+const qqNumber = ref('')
 const ticketValid = ref(false)
 const ticketError = ref('')
 const lotteryJoined = ref(false)
@@ -46,8 +48,7 @@ async function validateTicketId(ticketId: string) {
   }
 }
 
-const joinGroupLink = ref(`https://qm.qq.com/cgi-bin/qm/qr?k=Vn8XDvFUL0SfYYA_h9xpm3thLmfg24vt&jump_from=webapi&authKey=2L6lxLFmHHJkHJRsUPuSrd/JwrLASmsB41xhlJeJLecebKvn2DwNyAnmwbEo4dRe`)
-const joinGroupQRCode = useQRCode(`https://qm.qq.com/cgi-bin/qm/qr?k=pHVvRyq9075vonyo_tPkpw0UhrX2SlMx&jump_from=webapi&qr=1`)
+const joinGroupQRCode = useQRCode(joinGroupLink.value)
 const currentStep = ref(0)
 const ifFormIncompleted = computed(() => {
   return currentStep.value === 1 && (!qqNumber.value || !name.value) || !ticketValid.value || lotteryJoined.value
@@ -80,8 +81,6 @@ const buttonText = computed(() => {
       return '下一步'
   }
 })
-const qqNumber = ref('')
-const name = ref('')
 async function submitForm() {
   console.log(`name: ${name.value}, qqNumber: ${qqNumber.value}`)
   await fetch(`/api/saveLottery`, {
@@ -107,8 +106,8 @@ watch(currentStep, async (val) => {
     window.open(joinGroupLink.value)
   }
 }, { immediate: true })
-function debounce(fn, delay) {
-  let timer = null
+function debounce(fn: { (val: any): void, apply?: any }, delay: number | undefined) {
+  let timer: string | number | NodeJS.Timeout | null | undefined = null
   return function () {
     if (timer)
       clearTimeout(timer)
@@ -118,7 +117,7 @@ function debounce(fn, delay) {
     }, delay)
   }
 }
-const debounceGetQQNumber = debounce((val) => {
+const debounceGetQQNumber = debounce((val: any) => {
   console.log(val)
 }, 500)
 watch(qqNumber, (val) => {
@@ -193,7 +192,7 @@ watch(qqNumber, (val) => {
     </button>
 
     <button
-      v-if="currentStep == 2"
+      v-if="currentStep === 2"
       type="button"
       class="w-full h-12 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" @click="currentStep = 0"
     >
