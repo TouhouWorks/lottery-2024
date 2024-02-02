@@ -128,7 +128,7 @@ watch(qqNumber, (val) => {
 <template>
   <div v-if="currentStep === 0" class="flex flex-col items-center px-8 gap-2 h-[90vh]">
     <h1 class="font-light mt-4 text-[1.5rem]">
-      参与「幻夢結社」2024 高凉年例祭现场抽奖
+      参与高凉年例祭现场抽奖
     </h1>
     <hr class="w-full my-2 border-gray-300">
     <p>
