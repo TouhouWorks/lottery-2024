@@ -127,10 +127,10 @@ watch(qqNumber, (val) => {
 
 <template>
   <div v-if="currentStep === 0" class="flex flex-col items-center px-8 gap-2 h-[90vh]">
-    <h1 class="text-[2rem] font-light mt-4">
+    <h1 class="font-light mt-4 text-[1.5rem]">
       参与「幻夢結社」2024 高凉年例祭现场抽奖
     </h1>
-    <hr class="w-full my-4 border-gray-300">
+    <hr class="w-full my-2 border-gray-300">
     <p>
       幻夢結社新年大礼包。南国开曙日，油城复新春。助力首届粤西 THP 顺利举办，幻夢結社特推出贺岁抽奖活动。
     </p>
@@ -145,6 +145,7 @@ watch(qqNumber, (val) => {
         :href="joinGroupLink"
       >「幻夢結社」QQ同好群</a>，即有机会参与抽奖
     </p>
+    <p>QQ 群号: <code class="text-red-400 font-bold font-mono">483024893</code></p>
     <p>春风送暖，浮生幻梦，相伴有你。祝参加粤西 THP 的各位同好心想事成，万事如意。相见明年。（详细信息可咨询摊位工作人员）</p>
     <p class="text-gray-400 text-xs">
       <code>票据ID: #{{ ticketId }}</code>
