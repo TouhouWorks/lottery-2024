@@ -6,7 +6,7 @@ export default async function handler(
   response: VercelResponse,
 ) {
   const list = (await kv.keys('lottery:*'))
-  if (!list)
+  if (list.length === 0 || !list)
     return response.status(200).json([])
 
   const result = await kv.mget(list)
