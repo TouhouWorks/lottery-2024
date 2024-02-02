@@ -186,7 +186,7 @@ watch(qqNumber, (val) => {
     <button
       type="button"
       class="w-full h-12 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      :disabled="ifFormIncompleted" @click="currentStep++"
+      :disabled="ifFormIncompleted && currentStep !== 2" @click="currentStep++"
     >
       {{ buttonText }}
     </button>
