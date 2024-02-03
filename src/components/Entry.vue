@@ -16,6 +16,7 @@ function checkBrowserSupport() {
 }
 const joinGroupLink = ref(`https://qm.qq.com/q/o4n2wIlogE`)
 const name = ref('')
+const qqNumberValid = ref(false)
 const qqNumber = ref('')
 const ticketValid = ref(false)
 const ticketError = ref('')
@@ -51,7 +52,7 @@ async function validateTicketId(ticketId: string) {
 const joinGroupQRCode = useQRCode(joinGroupLink.value)
 const currentStep = ref(0)
 const ifFormIncompleted = computed(() => {
-  return currentStep.value === 1 && (!qqNumber.value || !name.value) || !ticketValid.value || lotteryJoined.value
+  return currentStep.value === 1 && (!qqNumber.value || !name.value || !qqNumberValid.value) || !ticketValid.value || lotteryJoined.value
 })
 const buttonText = computed(() => {
   switch (currentStep.value) {
@@ -123,6 +124,13 @@ const debounceGetQQNumber = debounce((val: any) => {
 watch(qqNumber, (val) => {
   debounceGetQQNumber(val)
 })
+function qqAvatarLoaded(dom) {
+  const { naturalWidth, naturalHeight } = dom.target
+  if (naturalWidth === 40 || naturalHeight === 40)
+    qqNumberValid.value = false
+  else
+    qqNumberValid.value = true
+}
 </script>
 
 <template>
@@ -170,7 +178,7 @@ watch(qqNumber, (val) => {
         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="输入QQ号"
       >
     </div>
-    <img v-if="qqNumber" :src="`https://q1.qlogo.cn/g?b=qq&nk=${qqNumber}&s=640`" class="w-32 h-32 rounded-full mt-12">
+    <img v-if="qqNumber" id="avatar" :src="`https://q1.qlogo.cn/g?b=qq&nk=${qqNumber}&s=640`" class="w-32 h-32 rounded-full mt-12" @load="qqAvatarLoaded">
     <!-- <button type="button" class="mt-auto w-full h-[4rem] rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" @click="currentStep++">提交</button> -->
   </div>
 
