@@ -139,7 +139,7 @@ watch(qqNumber, (val) => {
       <li>「<span class="text-red-400 font-bold">夢</span>」字榜眼，可兑换三百元大奖及周边礼品。</li>
       <li>「<span class="text-blue-400 font-bold">結</span>」字探花，可兑换一百元大奖及周边礼品。</li>
     </ol>
-    <p class="font-semibold">
+    <p class="font-semibold text-xl text-red-500">
       只要在年例祭现场加入<a
         target="_blank" class="text-blue-500 hover:text-blue-400 px-2"
         :href="joinGroupLink"
