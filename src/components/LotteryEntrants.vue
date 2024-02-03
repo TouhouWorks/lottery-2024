@@ -123,7 +123,7 @@ function formatTime(time: number) {
                 <img :src="`https://q1.qlogo.cn/g?b=qq&nk=${item.qqNumber}&s=640`" class="w-16 h-16 rounded-full shadow-sm">
               </div>
               <div class="flex flex-col ml-4">
-                <span class="text-2xl text-white drop-shadow-sm">{{ item.nickname }}</span>
+                <span class="text-2xl text-white drop-shadow-sm line-clamp-1">{{ item.nickname }}</span>
               </div>
             </div>
             <span class="text-lg font-light text-white drop-shadow-sm">{{ formatTime(item.time) }}</span>
