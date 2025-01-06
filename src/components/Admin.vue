@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { computedAsync, toRefs, useDebounce, useScroll, useStorage, watchDebounced } from '@vueuse/core'
-import { computed, h, nextTick, onMounted, ref, watch } from 'vue'
+import { useStorage } from '@vueuse/core'
+
 import { useQRCode } from '@vueuse/integrations/useQRCode'
+import {
+  ref,
+  watch,
+} from 'vue'
 
 const jwtSession = useStorage('jwtSession', '')
 const code = ref('')
@@ -45,11 +49,13 @@ function countdownTimer() {
   }, 1000)
   return timer
 }
-let timer = null
+let timer: any = null
 
 watch(needDisplay, (value) => {
   console.log(value)
-  if (value) { timer = countdownTimer() }
+  if (value) {
+    timer = countdownTimer()
+  }
 
   else {
     console.log('clear timer')

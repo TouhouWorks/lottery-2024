@@ -1,6 +1,17 @@
 <script lang="ts" setup>
-import { computedAsync, toRefs, useDebounce, useScroll, watchDebounced } from '@vueuse/core'
-import { computed, h, nextTick, onMounted, ref, watch } from 'vue'
+import {
+  computedAsync,
+  toRefs,
+  useScroll,
+} from '@vueuse/core'
+
+import {
+  nextTick,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
+
 import wait from 'wait'
 
 const listUrl = '/api/getLotteries'
@@ -25,8 +36,8 @@ async function getList() {
   return data
 }
 const el = ref<HTMLElement | null>(null)
-const { x, y, isScrolling, arrivedState, directions } = useScroll(el, { behavior: 'smooth' })
-const { left, right, top, bottom } = toRefs(arrivedState)
+const { y, arrivedState } = useScroll(el, { behavior: 'smooth' })
+const { bottom } = toRefs(arrivedState)
 
 // watchDebounced(y, (value) => {
 //   if (value === 0)
@@ -37,11 +48,11 @@ const { left, right, top, bottom } = toRefs(arrivedState)
 const stopScroll = ref(false)
 async function scroll() {
   await wait(100)
-  if (!bottom.value && list.value?.length > 0) {
+  if (!bottom.value && list.value?.length && list.value?.length > 0) {
     y.value += 10
     console.log('normal scroll', y.value)
   }
-  if (bottom.value && list.value?.length > 0 && y.value > 0) {
+  if (bottom.value && list.value?.length && list.value?.length > 0 && y.value > 0) {
     console.log(`bottom arrived, y: ${y.value}`)
     stopScroll.value = true
     setTimeout(() => {
@@ -79,7 +90,7 @@ async function scroll() {
 }
 scroll()
 
-watch(list, (value) => {
+watch(list, () => {
   console.log('list changed')
   setTimeout(() => {
     nextTick(() => {

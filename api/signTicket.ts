@@ -1,7 +1,13 @@
-import { kv } from '@vercel/kv'
-import type { VercelRequest, VercelResponse } from '@vercel/node'
+import process from 'node:process'
+
 import jwt from 'jsonwebtoken'
-import { generateSecret, verifyToken } from 'node-2fa'
+import { verifyToken } from 'node-2fa'
+
+import { kv } from '@vercel/kv'
+import type {
+  VercelRequest,
+  VercelResponse,
+} from '@vercel/node'
 
 export default async function handler(
   request: VercelRequest,

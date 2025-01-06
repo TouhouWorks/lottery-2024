@@ -1,8 +1,15 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue'
-import { useQRCode } from '@vueuse/integrations/useQRCode'
+import {
+  computed,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
+
 import { useRoute } from 'vue-router'
+
 import { CheckCircleIcon } from '@heroicons/vue/24/solid'
+import { useQRCode } from '@vueuse/integrations/useQRCode'
 
 const route = useRoute()
 const ticketId = route.params.ticketId as string
@@ -14,7 +21,7 @@ function checkBrowserSupport() {
 
   return !(isQQBrowser || isWechat)
 }
-const joinGroupLink = ref(`https://qm.qq.com/q/o4n2wIlogE`)
+const joinGroupLink = 'https://qm.qq.com/q/o4n2wIlogE'
 const name = ref('')
 const qqNumberValid = ref(false)
 const qqNumber = ref('')
@@ -49,10 +56,12 @@ async function validateTicketId(ticketId: string) {
   }
 }
 
-const joinGroupQRCode = useQRCode(joinGroupLink.value)
+const joinGroupQRCode = useQRCode(joinGroupLink)
 const currentStep = ref(0)
-const ifFormIncompleted = computed(() => {
-  return currentStep.value === 1 && (!qqNumber.value || !name.value || !qqNumberValid.value) || !ticketValid.value || lotteryJoined.value
+const isFormIncompleted = computed(() => {
+  return currentStep.value === 1
+    && (!qqNumber.value || !name.value || !qqNumberValid.value)
+    || !ticketValid.value || lotteryJoined.value
 })
 const buttonText = computed(() => {
   switch (currentStep.value) {
@@ -71,7 +80,7 @@ const buttonText = computed(() => {
       }
     }
     case 1: {
-      if (ifFormIncompleted.value)
+      if (isFormIncompleted.value)
         return '少女折寿中...'
 
       return '提交'
@@ -104,17 +113,17 @@ watch(currentStep, async (val) => {
   }
   if (val === 3) {
     currentStep.value = 0
-    window.open(joinGroupLink.value)
+    window.open(joinGroupLink)
   }
 }, { immediate: true })
 function debounce(fn: { (val: any): void, apply?: any }, delay: number | undefined) {
   let timer: string | number | NodeJS.Timeout | null | undefined = null
-  return function () {
+  return function (this: any, ...args: any) {
     if (timer)
       clearTimeout(timer)
 
     timer = setTimeout(() => {
-      fn.apply(this, arguments)
+      fn.apply(this, ...args)
     }, delay)
   }
 }
@@ -124,7 +133,7 @@ const debounceGetQQNumber = debounce((val: any) => {
 watch(qqNumber, (val) => {
   debounceGetQQNumber(val)
 })
-function qqAvatarLoaded(dom) {
+function qqAvatarLoaded(dom: any) {
   const { naturalWidth, naturalHeight } = dom.target
   if (naturalWidth === 40 || naturalHeight === 40)
     qqNumberValid.value = false
@@ -195,7 +204,7 @@ function qqAvatarLoaded(dom) {
     <button
       type="button"
       class="w-full h-12 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      :disabled="ifFormIncompleted && currentStep !== 2" @click="currentStep++"
+      :disabled="isFormIncompleted && currentStep !== 2" @click="currentStep++"
     >
       {{ buttonText }}
     </button>

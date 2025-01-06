@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import _ from 'lodash'
-import wait from 'wait'
 import { computedAsync } from '@vueuse/core'
-import { computed, onMounted, ref } from 'vue'
+
+import _ from 'lodash'
+import {
+  computed,
+  onMounted,
+  ref,
+} from 'vue'
+
+import wait from 'wait'
 
 const listUrl = '/api/getLotteries'
 const currentIndex = ref(0)
@@ -315,8 +321,8 @@ onMounted(() => {
   backdrop-filter: blur(5px);
 }
 .svg-motion-blur{
-	-webkit-filter: url("#blur");
-	filter: url("#blur");
+  -webkit-filter: url("#blur");
+  filter: url("#blur");
 }
 .scale {
   transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
