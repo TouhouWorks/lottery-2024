@@ -22,7 +22,7 @@ const showAward = ref(false)
 const showLine = ref(false)
 const blurFilter = ref(null as SVGElement | null)
 const clicked = ref(false)
-const defaultAnimationTime = 1
+const defaultAnimationTime = 10
 const cls = ref(0)
 const clsNames = [
   '幻',
