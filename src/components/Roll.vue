@@ -186,7 +186,7 @@ async function rollTo(target: number) {
   await wait(10)
   time.value = defaultAnimationTime
   currentIndex.value = target
-  console.log('stopping at', target)
+  console.log('stopping at', Math.round(target + 3))
   return wait(defaultAnimationTime * 1000)
 }
 
@@ -201,7 +201,6 @@ async function randomGen(): Promise<number> {
   })
   const rndStr = `${randomNumber.substring(0, 3)}.${randomNumber.substring(3)}`
   const rnd = Number.parseFloat(rndStr)
-  console.log(`rndStr: ${rndStr}`)
   return rnd
 }
 async function startDice() {
@@ -214,7 +213,7 @@ async function startDice() {
   // while ((target % 1 <= 0.55) && (target % 1 >= 0.45))
   fetchingRandom.value = false
   showLine.value = true
-  await rollTo(target)
+
   const lotteried = Math.round(target + 3)
   const data = document.querySelector(`[data-index="${lotteried}"]`) as HTMLElement
   console.log({
@@ -225,6 +224,9 @@ async function startDice() {
       index: data.dataset.index,
     },
   })
+
+  await rollTo(target)
+
   diceComplete(data)
 }
 
