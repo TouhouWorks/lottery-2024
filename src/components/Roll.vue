@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computedAsync } from '@vueuse/core'
+import { computedAsync, useDebounceFn } from '@vueuse/core'
 import _ from 'lodash'
 import {
   computed,
@@ -174,11 +174,11 @@ async function startRoll(n: number) {
   await wait(5)
   time.value = 0
   currentIndex.value = 0
-  stop()
+  startDice()
 }
 const pray = ref(false)
 
-async function stopRoll(target: number) {
+async function rollTo(target: number) {
   pray.value = true
   easeOut()
   time.value = 0
@@ -204,7 +204,7 @@ async function randomGen(): Promise<number> {
   console.log(`rndStr: ${rndStr}`)
   return rnd
 }
-async function stop() {
+async function startDice() {
   const target = await randomGen()
   // const rnd = Math.random()
   // do {
@@ -214,7 +214,7 @@ async function stop() {
   // while ((target % 1 <= 0.55) && (target % 1 >= 0.45))
   fetchingRandom.value = false
   showLine.value = true
-  await stopRoll(target)
+  await rollTo(target)
   const lotteried = Math.round(target + 3)
   const data = document.querySelector(`[data-index="${lotteried}"]`) as HTMLElement
   console.log({
@@ -241,6 +241,7 @@ async function diceComplete(data: any) {
   await wait(50)
   cardScale.value = 2
   await wait(500)
+
   showAward.value = true
 }
 
@@ -285,9 +286,33 @@ function setMotionBlur() {
     // store current position for the next frame
     lastPos = currentPos
 
+    // posUpdated(lastPos)
+
     // call to update in the next frame
     requestAnimationFrame(updateMotionBlur)
   })()
+}
+
+const posHistory = ref(new Set<string>())
+let lastTriggerTime = 0
+const debounceUpdate = useDebounceFn((lastCallTime: number) => {
+  console.log(`debounceUpdate called at ${lastCallTime}ms`)
+}, 5)
+function posUpdated(pos: JQueryCoordinates | undefined) {
+  if (!pray.value)
+    return
+
+  const posKey = `${(pos!.left / 100).toFixed(0)},${pos?.top}`
+  if (posHistory.value.has(posKey)) {
+    return
+  }
+  posHistory.value.add(posKey)
+
+  const now = performance.now()
+  const triggerDiff = Math.round(now - lastTriggerTime)
+  debounceUpdate(triggerDiff)
+  // console.log(`posUpdated: ${pos?.left.toFixed(0)}, prevTriggerTime: ${triggerDiff}ms`)
+  lastTriggerTime = now
 }
 
 function reloadPage() {
