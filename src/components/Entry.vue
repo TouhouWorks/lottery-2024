@@ -1,15 +1,15 @@
 <script lang="ts" setup>
+import { CheckCircleIcon } from '@heroicons/vue/24/solid'
+
+import { useQRCode } from '@vueuse/integrations/useQRCode'
+
 import {
   computed,
   onMounted,
   ref,
   watch,
 } from 'vue'
-
 import { useRoute } from 'vue-router'
-
-import { CheckCircleIcon } from '@heroicons/vue/24/solid'
-import { useQRCode } from '@vueuse/integrations/useQRCode'
 
 const route = useRoute()
 const ticketId = route.params.ticketId as string

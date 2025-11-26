@@ -8,17 +8,17 @@ import Roll from './components/Roll.vue'
 import './style.css'
 
 const routes = [
-  { path: '/', component: LotteryEntrants },
-  { path: '/ticket/:ticketId', component: Entry },
-  { path: '/roll', component: Roll },
-  {
-    path: '/lotteryEntrants',
-    component: LotteryEntrants,
-  },
-  {
-    path: '/admin',
-    component: Admin,
-  },
+  // { path: '/', component: LotteryEntrants },
+  // { path: '/ticket/:ticketId', component: Entry },
+  { path: '/', component: Roll },
+  // {
+  //   path: '/lotteryEntrants',
+  //   component: LotteryEntrants,
+  // },
+  // {
+  //   path: '/admin',
+  //   component: Admin,
+  // },
 ]
 const router = createRouter({
   history: createWebHistory(),
