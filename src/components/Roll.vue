@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computedAsync, useDebounceFn } from '@vueuse/core'
+import { computedAsync } from '@vueuse/core'
 import _ from 'lodash'
 import {
   computed,
@@ -10,7 +10,7 @@ import wait from 'wait'
 
 import qqData from './data.json'
 
-const listUrl = '/api/getLotteries'
+// const listUrl = '/api/getLotteries'
 const currentIndex = ref(0)
 const time = ref(0)
 const easing = ref('cubic-bezier(0.16, 1, 0.3, 1)')
@@ -295,27 +295,27 @@ function setMotionBlur() {
   })()
 }
 
-const posHistory = ref(new Set<string>())
-let lastTriggerTime = 0
-const debounceUpdate = useDebounceFn((lastCallTime: number) => {
-  console.log(`debounceUpdate called at ${lastCallTime}ms`)
-}, 5)
-function posUpdated(pos: JQueryCoordinates | undefined) {
-  if (!pray.value)
-    return
+// const posHistory = ref(new Set<string>())
+// let lastTriggerTime = 0
+// const debounceUpdate = useDebounceFn((lastCallTime: number) => {
+//   console.log(`debounceUpdate called at ${lastCallTime}ms`)
+// }, 5)
 
-  const posKey = `${(pos!.left / 100).toFixed(0)},${pos?.top}`
-  if (posHistory.value.has(posKey)) {
-    return
-  }
-  posHistory.value.add(posKey)
+// function posUpdated(pos: JQueryCoordinates | undefined) {
+//   if (!pray.value)
+//     return
 
-  const now = performance.now()
-  const triggerDiff = Math.round(now - lastTriggerTime)
-  debounceUpdate(triggerDiff)
-  // console.log(`posUpdated: ${pos?.left.toFixed(0)}, prevTriggerTime: ${triggerDiff}ms`)
-  lastTriggerTime = now
-}
+//   const posKey = `${(pos!.left / 100).toFixed(0)},${pos?.top}`
+//   if (posHistory.value.has(posKey)) {
+//     return
+//   }
+//   posHistory.value.add(posKey)
+
+//   const now = performance.now()
+//   const triggerDiff = Math.round(now - lastTriggerTime)
+//   debounceUpdate(triggerDiff)
+//   lastTriggerTime = now
+// }
 
 function reloadPage() {
   if (!audio?.value?.paused) {
@@ -339,9 +339,9 @@ setInterval(() => {
   dotCount.value = (dotCount.value + 1) % 4
 }, 150)
 
-function isFirefox() {
-  return navigator.userAgent.includes('Firefox')
-}
+// function isFirefox() {
+//   return navigator.userAgent.includes('Firefox')
+// }
 function loadAssets() {
   sound.load()
   sound.oncanplaythrough = () => {
@@ -384,7 +384,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div v-if="loaded" class="w-full lg:mx-16 mx-4 h-screen overflow-x-hidden">
+    <div v-if="loaded" class="w-full lg:mx-16 mx-4 overflow-x-hidden">
       <button
         class="fixed mt-5 top-0 right-4 lg:right-24 m-2 z-50 bg-gray-500 shadow-md rounded-md text-gray-100 px-5 py-1"
         type="button" @click="toggleFullScreen"
@@ -419,69 +419,61 @@ onMounted(() => {
           正在获取随机数...
         </span>
       </div>
-      <div class="fixed m-auto w-[90vw] h-48 left-0 right-0 bottom-0 top-0 flex items-center justify-center z-40">
-        <!-- <div class="h-40 w-40 z-50 gl" /> -->
-        <!-- <div
-          v-show="showLine"
-          :class="{
-            // bg-yellow-300 m-auto shadow-yellow-600
-            'bg-purple-500 m-auto shadow-purple-700': showLine && cls === 0,
-            'bg-red-500 m-auto shadow-red-700': showLine && cls === 1,
-            'bg-blue-500 m-auto shadow-blue-700': showLine && cls === 2,
-          }"
-          class="h-40 w-[3px]  shadow-md z-50"
-        /> -->
-        <div v-show="showLine" class="h-48 w-[3px] bg-yellow-300 m-auto shadow-yellow-600 shadow-md z-50" />
-        <!-- <div class="h-40 w-40 z-50 gr" /> -->
-      </div>
-
-      <div class="h-full w-full">
-        <div
-          :class="{ 'justify-center': !showList }" class="flex gap-2 items-center shrink-0 h-full w-full"
-          :style="`transition: all ${time}s ${easing};transform: translateX(-${currentIndex * 20}%)`"
-        >
-          <template v-if="showList">
-            <div
-              v-for="(item) in 1000" :key="item"
-              class="svg-motion-blur ibg flex flex-col gap-3 h-48 rounded-lg items-center justify-between w-[calc(20%-0.5rem)] shrink-0 shadow-md overflow-hidden"
-            >
-              <img
-                :src="`https://q1.qlogo.cn/g?b=qq&nk=${tripleList[item % tripleList.length]?.qqNumber}&s=640`"
-                class="mt-auto rounded-full size-24 drop-shadow-md"
-              >
-              <span
-                class="text-white drop-shadow-md mt-1 mb-auto text-lg font-semibold max-w-64 truncate"
-                :data-index="item" :data-nickname="tripleList[item % tripleList.length]?.nickname"
-                :data-qqNumber="tripleList[item % tripleList.length]?.qqNumber"
-                v-html="tripleList[item % tripleList.length].nickname"
-              />
-            </div>
-          </template>
+      <div class="flex flex-col h-screen w-full items-center justify-center">
+        <div class="relative w-full overflow-x-hidden h-[32rem] flex items-center">
           <div
-            v-else :style="`transform: scale(${cardScale})`"
-            class="scale z-50 ibg mx-1 flex h-fit rounded-lg items-center justify-center w-fit shrink-0 shadow-md overflow-hidden"
+            v-if="showLine"
+            class="absolute m-auto w-[90vw] h-48 left-0 right-0 bottom-0 top-0 flex items-center justify-center z-40"
           >
-            <div :class="{ 'flex-col items-center': !showAward, 'gap-6': showAward }" class="flex w-full p-8">
-              <img
-                :src="`https://q1.qlogo.cn/g?b=qq&nk=${targetQqNumber}&s=640`"
-                class="mt-auto rounded size-24 drop-shadow-md"
+            <div class="h-48 w-[3px] bg-yellow-300 m-auto shadow-yellow-600 shadow-md z-50" />
+          </div>
+          <div
+            :class="{ 'justify-center': !showList }" class="flex gap-2 items-center shrink-0 w-full"
+            :style="`transition: all ${time}s ${easing};transform: translateX(-${currentIndex * 20}%)`"
+          >
+            <template v-if="showList">
+              <div
+                v-for="(item) in 1000" :key="item"
+                class="svg-motion-blur ibg flex flex-col gap-3 h-48 rounded-lg items-center justify-between w-[calc(20%-0.5rem)] shrink-0 shadow-md overflow-hidden"
               >
-              <div class="flex flex-col justify-between mb-1">
-                <div class="flex flex-col">
-                  <span
-                    class="text-white drop-shadow-md text-xl font-semibold truncate max-w-64"
-                    :class="{
-                      'min-w-32': showAward,
-                    }"
-                    v-html="targetNickname"
-                  />
-                  <span v-if="showAward" class="scale text-white drop-shadow-md font-light">{{ targetQqNumber }}</span>
-                </div>
-                <div
-                  v-if="showAward" :class="[`bg-${awardColor[targetAward]}-500`]"
-                  class="flex items-center justify-center size-7 mr-auto rounded scale drop-shadow-md text-lg font-semibold text-white"
+                <img
+                  :src="`https://q1.qlogo.cn/g?b=qq&nk=${tripleList[item % tripleList.length]?.qqNumber}&s=640`"
+                  class="mt-auto rounded-full size-24 drop-shadow-md"
                 >
-                  <span>{{ targetAward }}</span>
+                <span
+                  class="text-white drop-shadow-md mt-1 mb-auto text-lg font-semibold max-w-64 truncate"
+                  :data-index="item" :data-nickname="tripleList[item % tripleList.length]?.nickname"
+                  :data-qqNumber="tripleList[item % tripleList.length]?.qqNumber"
+                  v-html="tripleList[item % tripleList.length].nickname"
+                />
+              </div>
+            </template>
+
+            <div
+              v-else :style="`transform: scale(${cardScale})`"
+              class="scale z-50 ibg mx-1 flex h-fit rounded-lg items-center justify-center w-fit shrink-0 shadow-md overflow-hidden"
+            >
+              <div :class="{ 'flex-col items-center': !showAward, 'gap-6': showAward }" class="flex w-full p-8">
+                <img
+                  :src="`https://q1.qlogo.cn/g?b=qq&nk=${targetQqNumber}&s=640`"
+                  class="mt-auto rounded size-24 drop-shadow-md"
+                >
+                <div class="flex flex-col justify-between mb-1">
+                  <div class="flex flex-col">
+                    <span
+                      class="text-white drop-shadow-md text-xl font-semibold truncate max-w-64" :class="{
+                        'min-w-32': showAward,
+                      }" v-html="targetNickname"
+                    />
+                    <span v-if="showAward" class="scale text-white drop-shadow-md font-light">{{ targetQqNumber
+                    }}</span>
+                  </div>
+                  <div
+                    v-if="showAward" :class="[`bg-${awardColor[targetAward]}-500`]"
+                    class="flex items-center justify-center size-7 mr-auto rounded scale drop-shadow-md text-lg font-semibold text-white"
+                  >
+                    <span>{{ targetAward }}</span>
+                  </div>
                 </div>
               </div>
             </div>
