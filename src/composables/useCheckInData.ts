@@ -18,7 +18,7 @@ export function useCheckInData() {
         item.value.user_name = `叮铃铃用户# ${item.value.user_id}`
       }
       return item.value
-    }))
+    })).catch(() => [])
     checkInData.value = data
   }
 

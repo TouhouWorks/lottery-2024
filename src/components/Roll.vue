@@ -163,9 +163,14 @@ onMounted(() => {
       </svg>
     </div>
     <div class="bgog h-screen w-screen fixed">
-      <div v-if="pray" class="h-screen w-screen flex items-end justify-end text-white z-50">
+      <div class="h-screen w-screen flex items-end justify-end text-white z-50">
         <div class="mx-16 my-8 flex items-start w-48 drop-shadow-md font-semibold text-2xl">
-          少女祈祷中{{ '.'.repeat(dotCount) }}
+          <span v-if="pray">
+            少女祈祷中{{ '.'.repeat(dotCount) }}
+          </span>
+          <span v-else>
+            已登记人数: {{ list?.length || 0 }} 人
+          </span>
         </div>
       </div>
     </div>
