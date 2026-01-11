@@ -17,4 +17,4 @@ export const MUSIC_FILES = [
 ]
 
 export const CHECKIN_API_URL = 'https://shizuku-kv.satori.workers.dev/kv/export/yxtho.json'
-export const CHECKIN_API_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmcm9udGVuZCIsIm5hbWVzcGFjZXMiOlsieXh0aG8iXSwiaWF0IjoxNzY4MTI0MDY5fQ.KzLAiYJvFtJxBAb4hlRU0HiRl1n8x8QJMhsyn3AWryI'
+export const CHECKIN_API_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmcm9udGVuZCIsInBlcm1pc3Npb25zIjpbeyJuYW1lc3BhY2UiOiJ5eHRobyIsInBlcm1pc3Npb25zIjpbInJlYWQiXX1dLCJpYXQiOjE3NjgxMzQ2NjZ9.UgtP5EgGeMCwqTGe2pwJbTnOeynexYwHLOAd6aoE5ew'
