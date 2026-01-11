@@ -1,14 +1,45 @@
 <script setup lang="ts">
-import { computedAsync } from '@vueuse/core'
+import { computedAsync, useMagicKeys } from '@vueuse/core'
 import _ from 'lodash'
 import {
   computed,
   onMounted,
   ref,
+  watch,
 } from 'vue'
 import wait from 'wait'
 
-import qqData from './data.json'
+// import qqData from './data.json'
+// interface QQDataItem {
+//   uin: number
+//   nick: string
+// }
+
+interface CheckInDataItem {
+  user_id: number
+  user_name: string
+  user_avatar: string
+  ticket_id: number
+  event_id: number
+  order_id: number
+
+}
+
+const checkInData = ref<CheckInDataItem[]>([])
+async function loadCheckInData() {
+  const res = await fetch('https://shizuku-kv.satori.workers.dev/kv/export/yxtho.json', {
+    headers: {
+      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmcm9udGVuZCIsIm5hbWVzcGFjZXMiOlsieXh0aG8iXSwiaWF0IjoxNzY4MTI0MDY5fQ.KzLAiYJvFtJxBAb4hlRU0HiRl1n8x8QJMhsyn3AWryI`,
+    },
+  })
+  const data = await res.json().then(r => r.map((item: any) => {
+    if (!item.value.user_name) {
+      item.value.user_name = `叮铃铃用户# ${item.value.user_id}`
+    }
+    return item.value
+  }))
+  checkInData.value = data
+}
 
 // const listUrl = '/api/getLotteries'
 const currentIndex = ref(0)
@@ -16,7 +47,8 @@ const time = ref(0)
 const easing = ref('cubic-bezier(0.16, 1, 0.3, 1)')
 const showList = ref(true)
 const targetNickname = ref('')
-const targetQqNumber = ref('')
+const targetUid = ref('')
+const targetAvatar = ref('')
 const cardScale = ref(1)
 const showAward = ref(false)
 const showLine = ref(false)
@@ -49,19 +81,15 @@ const audio = computed(() =>
 )
 
 const list = computedAsync(async () => {
-  // const res = await fetch(listUrl)
-  // const data: {
-  //   qqNumber: string
-  //   nickname: string
-  //   time: number
-  // }[] = await res.json()
   const data: {
-    qqNumber: string
+    uid: string
     nickname: string
+    avatar?: string
     time: number
-  }[] = qqData.map(item => ({
-    qqNumber: item.uin.toString(),
-    nickname: processNickname(item.nick),
+  }[] = checkInData.value.map(item => ({
+    uid: item.user_id.toString(),
+    avatar: item.user_avatar,
+    nickname: processNickname(item.user_name),
     time: Date.now(),
   }))
   return data
@@ -220,7 +248,7 @@ async function startDice() {
     lotteried,
     data: {
       nickname: data.dataset.nickname,
-      qqNumber: data.dataset.qqnumber,
+      uid: data.dataset.uid,
       index: data.dataset.index,
     },
   })
@@ -237,7 +265,8 @@ async function diceComplete(data: any) {
   showLine.value = false
   showList.value = false
   targetNickname.value = data.dataset.nickname
-  targetQqNumber.value = data.dataset.qqnumber
+  targetUid.value = data.dataset.uid
+  targetAvatar.value = data.dataset.avatar || ''
   currentIndex.value = 0
   playAudio()
   await wait(50)
@@ -250,7 +279,10 @@ async function diceComplete(data: any) {
 function playAudio() {
   audio.value.play()
 }
-
+const { f } = useMagicKeys()
+watch(f, () => {
+  toggleFullScreen()
+})
 function toggleFullScreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen()
@@ -327,7 +359,8 @@ function reloadPage() {
   easing.value = 'cubic-bezier(0.16, 1, 0.3, 1)'
   showList.value = true
   targetNickname.value = ''
-  targetQqNumber.value = ''
+  targetUid.value = ''
+  targetAvatar.value = ''
   cardScale.value = 1
   showAward.value = false
   showLine.value = false
@@ -359,7 +392,7 @@ function loadAssets() {
 onMounted(() => {
   // if (!isFirefox())
   // alert('请使用火狐浏览器打开本页面，否则可能会出现严重的渲染问题')
-
+  loadCheckInData()
   blurFilter.value = document.querySelector('#blur > feGaussianBlur') // the feGaussianBlur primitive
   console.log(blurFilter.value)
   loadAssets()
@@ -389,7 +422,7 @@ onMounted(() => {
         class="fixed mt-5 top-0 right-4 lg:right-24 m-2 z-50 bg-gray-500 shadow-md rounded-md text-gray-100 px-5 py-1"
         type="button" @click="toggleFullScreen"
       >
-        全屏
+        全屏 (F)
       </button>
       <div v-if="!clicked" class="fixed flex m-2 z-50 mt-5">
         <button
@@ -436,14 +469,24 @@ onMounted(() => {
                 v-for="(item) in 1000" :key="item"
                 class="svg-motion-blur ibg flex flex-col gap-3 h-48 rounded-lg items-center justify-between w-[calc(20%-0.5rem)] shrink-0 shadow-md overflow-hidden"
               >
-                <img
+                <!-- <img
                   :src="`https://q1.qlogo.cn/g?b=qq&nk=${tripleList[item % tripleList.length]?.qqNumber}&s=640`"
+                  class="mt-auto rounded-full size-24 drop-shadow-md"
+                > -->
+                <img
+                  :style="{
+                    filter: tripleList[item % tripleList.length]?.avatar ? '' : 'grayscale(100%) contrast(40%) brightness(130%)',
+                    backgroundColor: tripleList[item % tripleList.length]?.avatar ? '' : '#ffffff',
+                    padding: tripleList[item % tripleList.length]?.avatar ? '' : '0.5rem',
+                  }"
+                  :src="tripleList[item % tripleList.length]?.avatar ? `https://touhou.market/api/v1/images/${tripleList[item % tripleList.length]?.avatar}?format=webp&q=100&size=m` : 'https://touhou.market/assets/logo.webp'"
                   class="mt-auto rounded-full size-24 drop-shadow-md"
                 >
                 <span
                   class="text-white drop-shadow-md mt-1 mb-auto text-lg font-semibold max-w-64 truncate"
                   :data-index="item" :data-nickname="tripleList[item % tripleList.length]?.nickname"
-                  :data-qqNumber="tripleList[item % tripleList.length]?.qqNumber"
+                  :data-uid="tripleList[item % tripleList.length]?.uid"
+                  :data-avatar="tripleList[item % tripleList.length]?.avatar || ''"
                   v-html="tripleList[item % tripleList.length].nickname"
                 />
               </div>
@@ -454,8 +497,17 @@ onMounted(() => {
               class="scale z-50 ibg mx-1 flex h-fit rounded-lg items-center justify-center w-fit shrink-0 shadow-md overflow-hidden"
             >
               <div :class="{ 'flex-col items-center': !showAward, 'gap-6': showAward }" class="flex w-full p-8">
-                <img
+                <!-- <img
                   :src="`https://q1.qlogo.cn/g?b=qq&nk=${targetQqNumber}&s=640`"
+                  class="mt-auto rounded size-24 drop-shadow-md"
+                > -->
+                <img
+                  :style="{
+                    filter: targetAvatar ? '' : 'grayscale(100%) contrast(40%) brightness(130%)',
+                    backgroundColor: targetAvatar ? '' : '#ffffff',
+                    padding: targetAvatar ? '' : '0.5rem',
+                  }"
+                  :src="targetAvatar ? `https://touhou.market/api/v1/images/${targetAvatar}?format=webp&q=100&size=m` : 'https://touhou.market/assets/logo.webp'"
                   class="mt-auto rounded size-24 drop-shadow-md"
                 >
                 <div class="flex flex-col justify-between mb-1">
@@ -465,8 +517,7 @@ onMounted(() => {
                         'min-w-32': showAward,
                       }" v-html="targetNickname"
                     />
-                    <span v-if="showAward" class="scale text-white drop-shadow-md font-light">{{ targetQqNumber
-                    }}</span>
+                    <span v-if="showAward" class="scale text-white drop-shadow-md font-light">UID: {{ targetUid }}</span>
                   </div>
                   <div
                     v-if="showAward" :class="[`bg-${awardColor[targetAward]}-500`]"
@@ -503,7 +554,7 @@ onMounted(() => {
     background-image: linear-gradient(to left, var(--tw-gradient-stops));
 }
 .bgog {
-  background-image: url('/bg.jpg');
+  background-image: url('https://cdn.sa.net/2026/01/09/w9hOf7TegaRrpcU.jpg');
   background-size: cover;
   background-position: center;
   filter: brightness(0.8);
