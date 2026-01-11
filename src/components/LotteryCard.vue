@@ -24,11 +24,7 @@ const avatarUrl = computed(() => {
     class="svg-motion-blur ibg flex flex-col gap-3 h-48 rounded-lg items-center justify-between w-[calc(20%-0.5rem)] shrink-0 shadow-md overflow-hidden"
   >
     <img
-      :style="{
-        filter: hasAvatar ? '' : 'grayscale(100%) contrast(40%) brightness(130%)',
-        backgroundColor: hasAvatar ? '' : '#ffffff',
-        padding: hasAvatar ? '' : '0.5rem',
-      }"
+      :class="{ 'avatar-placeholder': !hasAvatar }"
       :src="avatarUrl"
       class="mt-auto rounded-full size-24 drop-shadow-md"
     >
@@ -51,5 +47,10 @@ const avatarUrl = computed(() => {
 .svg-motion-blur{
   -webkit-filter: url("#blur");
   filter: url("#blur");
+}
+.avatar-placeholder {
+  filter: grayscale(100%) contrast(40%) brightness(130%);
+  background-color: #ffffff;
+  padding: 0.5rem;
 }
 </style>

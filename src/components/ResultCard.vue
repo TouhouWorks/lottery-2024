@@ -33,11 +33,7 @@ const avatarUrl = computed(() => {
   >
     <div :class="{ 'flex-col items-center': !showAward, 'gap-6': showAward }" class="flex w-full p-8">
       <img
-        :style="{
-          filter: hasAvatar ? '' : 'grayscale(100%) contrast(40%) brightness(130%)',
-          backgroundColor: hasAvatar ? '' : '#ffffff',
-          padding: hasAvatar ? '' : '0.5rem',
-        }"
+        :class="{ 'avatar-placeholder': !hasAvatar }"
         :src="avatarUrl"
         class="mt-auto rounded size-24 drop-shadow-md"
       >
@@ -69,5 +65,10 @@ const avatarUrl = computed(() => {
 }
 .scale {
   transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.avatar-placeholder {
+  filter: grayscale(100%) contrast(40%) brightness(130%);
+  background-color: #ffffff;
+  padding: 0.5rem;
 }
 </style>
