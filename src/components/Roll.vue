@@ -43,9 +43,11 @@ const {
 const { setMotionBlur } = useMotionBlur()
 
 // 结果显示
-const targetNickname = ref('')
-const targetUid = ref('')
-const targetAvatar = ref('')
+const targetUser = ref({
+  nickname: '',
+  uid: '',
+  avatar: '',
+})
 const cardScale = ref(1)
 const showAward = ref(false)
 
@@ -101,9 +103,9 @@ async function diceComplete(data: any) {
   time.value = 0
   showLine.value = false
   showList.value = false
-  targetNickname.value = data.dataset.nickname
-  targetUid.value = data.dataset.uid
-  targetAvatar.value = data.dataset.avatar || ''
+  targetUser.value.nickname = data.dataset.nickname
+  targetUser.value.uid = data.dataset.uid
+  targetUser.value.avatar = data.dataset.avatar || ''
   currentIndex.value = 0
   playAudio()
   await wait(50)
@@ -117,9 +119,11 @@ async function diceComplete(data: any) {
 function reloadPage() {
   stopAudio()
   resetAnimation()
-  targetNickname.value = ''
-  targetUid.value = ''
-  targetAvatar.value = ''
+  targetUser.value = {
+    nickname: '',
+    uid: '',
+    avatar: '',
+  }
   cardScale.value = 1
   showAward.value = false
 }
@@ -201,9 +205,7 @@ onMounted(() => {
 
             <ResultCard
               v-else
-              :nickname="targetNickname"
-              :uid="targetUid"
-              :avatar="targetAvatar"
+              :user="targetUser"
               :award="targetAward"
               :scale="cardScale"
               :show-award="showAward"

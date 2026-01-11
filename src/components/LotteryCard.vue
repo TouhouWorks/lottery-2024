@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { LotteryUser } from './types'
+import { computed } from 'vue'
 
 const props = defineProps<{
   user?: LotteryUser
@@ -7,6 +8,15 @@ const props = defineProps<{
 }>()
 
 const displayUser = props.user || { uid: '', nickname: '', avatar: '', time: 0 }
+
+const hasAvatar = computed(() => {
+  return displayUser.avatar && displayUser.avatar.length > 0
+})
+const avatarUrl = computed(() => {
+  return displayUser.avatar
+    ? `https://touhou.market/api/v1/images/${displayUser.avatar}?format=webp&q=100&size=m`
+    : 'https://touhou.market/assets/logo.webp'
+})
 </script>
 
 <template>
@@ -15,11 +25,11 @@ const displayUser = props.user || { uid: '', nickname: '', avatar: '', time: 0 }
   >
     <img
       :style="{
-        filter: displayUser.avatar ? '' : 'grayscale(100%) contrast(40%) brightness(130%)',
-        backgroundColor: displayUser.avatar ? '' : '#ffffff',
-        padding: displayUser.avatar ? '' : '0.5rem',
+        filter: hasAvatar ? '' : 'grayscale(100%) contrast(40%) brightness(130%)',
+        backgroundColor: hasAvatar ? '' : '#ffffff',
+        padding: hasAvatar ? '' : '0.5rem',
       }"
-      :src="displayUser.avatar ? `https://touhou.market/api/v1/images/${displayUser.avatar}?format=webp&q=100&size=m` : 'https://touhou.market/assets/logo.webp'"
+      :src="avatarUrl"
       class="mt-auto rounded-full size-24 drop-shadow-md"
     >
     <span
