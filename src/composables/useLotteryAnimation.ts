@@ -28,16 +28,25 @@ export function useLotteryAnimation() {
     return wait(DEFAULT_ANIMATION_TIME * 1000)
   }
 
-  async function randomGen(): Promise<number> {
+  // async function randomGen(): Promise<number> {
+  //   fetchingRandom.value = true
+  //   const api = `https://www.random.org/integers/?num=1&min=4950&max=9959&col=1&base=10&format=plain&rnd=new`
+  //   const randomNumber = await fetch(api).then(r => r.text()).then(t => t.trim()).catch(() => {
+  //     console.warn('random.org 获取随机数失败，使用 Math.random() 作为后备')
+  //     fetchingRandom.value = false
+  //     return String(Math.floor(Math.random() * 100000) + 1)
+  //   })
+  //   const rndStr = `${randomNumber.substring(0, 3)}.${randomNumber.substring(3)}`
+  //   const rnd = Number.parseFloat(rndStr)
+  //   return rnd
+  // }
+
+  async function pRandomGen(): Promise<number> {
     fetchingRandom.value = true
-    const api = `https://www.random.org/integers/?num=1&min=4950&max=9959&col=1&base=10&format=plain&rnd=new`
-    const randomNumber = await fetch(api).then(r => r.text()).then(t => t.trim()).catch(() => {
-      console.warn('random.org 获取随机数失败，使用 Math.random() 作为后备')
-      fetchingRandom.value = false
-      return String(Math.floor(Math.random() * 100000) + 1)
-    })
-    const rndStr = `${randomNumber.substring(0, 3)}.${randomNumber.substring(3)}`
+    const rndNumber = String(Math.floor(Math.random() * (9959 - 4950 + 1)) + 4950)
+    const rndStr = `${rndNumber.substring(0, 3)}.${rndNumber.substring(3)}`
     const rnd = Number.parseFloat(rndStr)
+    fetchingRandom.value = false
     return rnd
   }
 
@@ -61,7 +70,7 @@ export function useLotteryAnimation() {
     clicked,
     fetchingRandom,
     rollTo,
-    randomGen,
+    randomGen: pRandomGen,
     reset,
   }
 }
