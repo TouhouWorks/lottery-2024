@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMagicKeys } from '@vueuse/core'
+import { useMagicKeys, useStorage } from '@vueuse/core'
 import { computed, onMounted, ref, watch } from 'vue'
 import wait from 'wait'
 import { useAudio } from '../composables/useAudio'
@@ -149,6 +149,8 @@ onMounted(() => {
   loadCheckInData()
   loadAssets()
 })
+
+const eventId = window.location.search.split('eventId=')[1] || 'yxtho-2026'
 </script>
 
 <template>
@@ -162,7 +164,13 @@ onMounted(() => {
         </defs>
       </svg>
     </div>
-    <div class="bgog h-screen w-screen fixed">
+    <div v-if="eventId === 'zjtho-2026'" class="absolute top-0 left-0 w-full h-full -z-1 overflow-hidden">
+      <video
+        src="/output_av1_th3.mp4" autoplay muted loop
+        class="w-full h-full object-cover brightness-100"
+      />
+    </div>
+    <div v-if="eventId === 'yxtho-2026'" class="bgog h-screen w-screen fixed">
       <div class="h-screen w-screen flex items-end justify-end text-white z-50">
         <div class="mx-16 my-8 flex items-start w-48 drop-shadow-md font-semibold text-2xl">
           <span v-if="pray">
