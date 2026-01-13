@@ -8,18 +8,40 @@ export function useCheckInData() {
   const checkInData = ref<CheckInDataItem[]>([])
 
   async function loadCheckInData() {
+    const staticCSVFile = 'https://gist.githubusercontent.com/akinazuki/6181e27ab04052bf1aa034638d125a28/raw/extraList.csv'
+
     const res = await fetch(CHECKIN_API_URL, {
       headers: {
         Authorization: `Bearer ${CHECKIN_API_TOKEN}`,
       },
     })
-    const data = await res.json().then(r => r.map((item: any) => {
+    const thmkData = await res.json().then(r => r.map((item: any) => {
       if (!item.value.user_name) {
         item.value.user_name = `叮铃铃用户# ${item.value.user_id}`
       }
+      item.value.type = 'thmk'
       return item.value
     })).catch(() => [])
-    checkInData.value = data
+    const qqData = await fetch(staticCSVFile).then(res => res.text()).then((text) => {
+      const lines = text.split('\n')
+      const data: CheckInDataItem[] = []
+      for (const line of lines) {
+        const [uid, nickname, avatar] = line.split(',')
+        if (uid && nickname) {
+          data.push({
+            user_id: Number(uid),
+            user_name: nickname,
+            user_avatar: avatar || '',
+            ticket_id: 0,
+            event_id: 0,
+            order_id: 0,
+            type: 'qq',
+          })
+        }
+      }
+      return data
+    }).catch(() => [])
+    checkInData.value = [...thmkData, ...qqData]
   }
 
   const list = computed(() => {
@@ -28,6 +50,7 @@ export function useCheckInData() {
       avatar: item.user_avatar,
       nickname: processNickname(item.user_name),
       time: Date.now(),
+      type: item.type,
     }))
     return data
   })

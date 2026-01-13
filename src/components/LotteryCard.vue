@@ -7,12 +7,18 @@ const props = defineProps<{
   index: number
 }>()
 
-const displayUser = props.user || { uid: '', nickname: '', avatar: '', time: 0 }
+const displayUser = props.user || { uid: '', nickname: '', avatar: '', time: 0, type: '' }
 
 const hasAvatar = computed(() => {
+  if (displayUser.type === 'qq') {
+    return true
+  }
   return displayUser.avatar && displayUser.avatar.length > 0
 })
 const avatarUrl = computed(() => {
+  if (displayUser.type === 'qq') {
+    return `https://q1.qlogo.cn/g?b=qq&nk=${displayUser.uid}&s=100`
+  }
   return displayUser.avatar
     ? `https://touhou.market/api/v1/images/${displayUser.avatar}?format=webp&q=100&size=m`
     : 'https://touhou.market/assets/logo.webp'
@@ -24,7 +30,7 @@ const avatarUrl = computed(() => {
     class="svg-motion-blur ibg flex flex-col gap-3 h-48 rounded-lg items-center justify-between w-[calc(20%-0.5rem)] shrink-0 shadow-md overflow-hidden"
   >
     <img
-      :class="{ 'avatar-placeholder': !hasAvatar }"
+      :class="{ 'avatar-placeholder': !hasAvatar && displayUser.type === 'thmk' }"
       :src="avatarUrl"
       class="mt-auto rounded-full size-24 drop-shadow-md"
     >
@@ -34,6 +40,7 @@ const avatarUrl = computed(() => {
       :data-nickname="displayUser.nickname"
       :data-uid="displayUser.uid"
       :data-avatar="displayUser.avatar || ''"
+      :data-type="displayUser.type"
       v-html="displayUser.nickname"
     />
   </div>

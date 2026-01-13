@@ -7,6 +7,7 @@ interface TargetUser {
   nickname: string
   uid: string
   avatar: string
+  type: string
 }
 
 const props = defineProps<{
@@ -17,9 +18,15 @@ const props = defineProps<{
 }>()
 
 const hasAvatar = computed(() => {
+  if (props.user.type === 'qq') {
+    return true
+  }
   return props.user.avatar && props.user.avatar.length > 0
 })
 const avatarUrl = computed(() => {
+  if (props.user.type === 'qq') {
+    return `https://q1.qlogo.cn/g?b=qq&nk=${props.user.uid}&s=640`
+  }
   return props.user.avatar
     ? `https://touhou.market/api/v1/images/${props.user.avatar}?format=webp&q=100&size=m`
     : 'https://touhou.market/assets/logo.webp'

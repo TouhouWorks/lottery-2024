@@ -47,6 +47,7 @@ const targetUser = ref({
   nickname: '',
   uid: '',
   avatar: '',
+  type: '',
 })
 const cardScale = ref(1)
 const showAward = ref(false)
@@ -106,6 +107,7 @@ async function diceComplete(data: any) {
   targetUser.value.nickname = data.dataset.nickname
   targetUser.value.uid = data.dataset.uid
   targetUser.value.avatar = data.dataset.avatar || ''
+  targetUser.value.type = data.dataset.type || ''
   currentIndex.value = 0
   playAudio()
   await wait(50)
@@ -123,6 +125,7 @@ function reloadPage() {
     nickname: '',
     uid: '',
     avatar: '',
+    type: '',
   }
   cardScale.value = 1
   showAward.value = false

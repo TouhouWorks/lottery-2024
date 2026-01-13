@@ -5,6 +5,7 @@ export interface CheckInDataItem {
   ticket_id: number
   event_id: number
   order_id: number
+  type: UserType
 }
 
 export interface LotteryUser {
@@ -12,7 +13,10 @@ export interface LotteryUser {
   nickname: string
   avatar?: string
   time: number
+  type: UserType
 }
+
+export type UserType = 'thmk' | 'qq'
 
 export type AwardType = '幻' | '夢' | '結'
 
