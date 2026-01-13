@@ -8,7 +8,7 @@ export function useCheckInData() {
   const checkInData = ref<CheckInDataItem[]>([])
 
   async function loadCheckInData() {
-    const staticCSVFile = 'https://gist.githubusercontent.com/akinazuki/6181e27ab04052bf1aa034638d125a28/raw/extraList.csv'
+    const staticCSVFile = `https://gist.githubusercontent.com/akinazuki/6181e27ab04052bf1aa034638d125a28/raw/extraList.csv?t=${Date.now()}`
 
     const res = await fetch(CHECKIN_API_URL, {
       headers: {
