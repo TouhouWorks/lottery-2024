@@ -4,11 +4,12 @@ import { computed, ref } from 'vue'
 import { CHECKIN_API_TOKEN, CHECKIN_API_URL } from '../components/constants'
 import { processNickname } from '../components/utils'
 
+const gistHash = new URLSearchParams(window.location.search).get('hash') || ''
 export function useCheckInData() {
   const checkInData = ref<CheckInDataItem[]>([])
 
   async function loadCheckInData() {
-    const staticCSVFile = `https://gist.githubusercontent.com/akinazuki/6181e27ab04052bf1aa034638d125a28/raw/extraList.csv?t=${Date.now()}`
+    const staticCSVFile = `https://gist.shizuku.sh/${gistHash}/extraList.csv?t=${Date.now()}`
 
     const res = await fetch(CHECKIN_API_URL, {
       headers: {
@@ -22,6 +23,10 @@ export function useCheckInData() {
       item.value.type = 'thmk'
       return item.value
     })).catch(() => [])
+    if (!gistHash) {
+      checkInData.value = thmkData
+      return
+    }
     const qqData = await fetch(staticCSVFile).then(res => res.text()).then((text) => {
       const lines = text.split('\n')
       const data: CheckInDataItem[] = []
