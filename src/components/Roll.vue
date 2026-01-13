@@ -3,6 +3,7 @@ import { useMagicKeys, useStorage } from '@vueuse/core'
 import { computed, onMounted, ref, watch } from 'vue'
 import wait from 'wait'
 import { useAudio } from '../composables/useAudio'
+import { useBLE } from '../composables/useBLE'
 import { useCheckInData } from '../composables/useCheckInData'
 import { useLotteryAnimation } from '../composables/useLotteryAnimation'
 import { useMotionBlur } from '../composables/useMotionBlur'
@@ -38,6 +39,8 @@ const {
   playSound,
   stopAudio,
 } = useAudio()
+
+const { setupHIDConnection } = useBLE()
 
 // 动态模糊
 const { setMotionBlur } = useMotionBlur()
@@ -132,10 +135,7 @@ function reloadPage() {
 }
 
 // 全屏切换
-const { f } = useMagicKeys()
-watch(f, () => {
-  toggleFullScreen()
-})
+const { f, x } = useMagicKeys()
 
 function toggleFullScreen() {
   if (!document.fullscreenElement) {
@@ -146,9 +146,45 @@ function toggleFullScreen() {
       document.exitFullscreen()
   }
 }
+watch(f, () => {
+  toggleFullScreen()
+})
+
+// const hidCallbackMapping = {
+//   16: () => { // up
+//     if (!clicked.value) {
+//       clicked.value = true
+//       startRoll(3)
+//     }
+//   },
+//   32: () => { // down
+//     if (!clicked.value) {
+//       clicked.value = true
+//       startRoll(2)
+//     }
+//   },
+//   1: () => { // vol +
+//     if (!clicked.value) {
+//       clicked.value = true
+//       startRoll(1)
+//     }
+//   },
+//   4: () => { // pause
+//     if (clicked.value) {
+//       reloadPage()
+//     }
+//   },
+// }
+
+// watch(x, async (e) => {
+//   if (e) {
+//     setupHIDConnection(hidCallbackMapping)
+//   }
+// }, { immediate: true })
 
 // 初始化
 onMounted(() => {
+  // setupHIDConnection(hidCallbackMapping)
   loadCheckInData()
   loadAssets()
 })
